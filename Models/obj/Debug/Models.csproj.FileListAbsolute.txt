@@ -1,0 +1,6 @@
+E:\Project\CSharp\THUCHANH\QLySinhVien\Models\bin\Debug\Models.dll
+E:\Project\CSharp\THUCHANH\QLySinhVien\Models\bin\Debug\Models.pdb
+E:\Project\CSharp\THUCHANH\QLySinhVien\Models\obj\Debug\Models.csprojAssemblyReference.cache
+E:\Project\CSharp\THUCHANH\QLySinhVien\Models\obj\Debug\Models.csproj.CoreCompileInputs.cache
+E:\Project\CSharp\THUCHANH\QLySinhVien\Models\obj\Debug\Models.dll
+E:\Project\CSharp\THUCHANH\QLySinhVien\Models\obj\Debug\Models.pdb
