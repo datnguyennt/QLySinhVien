@@ -19,10 +19,6 @@ namespace QLySinhVien.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ChiTietSinhVien>()
-                .Property(e => e.MaSinhVien)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<ChiTietSinhVien>()
                 .Property(e => e.SoDienThoai)
                 .IsUnicode(false);
 

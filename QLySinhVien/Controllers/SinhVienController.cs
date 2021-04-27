@@ -20,10 +20,11 @@ namespace QLySinhVien.Controllers
             //Tạo list result chứa thông tin dựa trên SinhVienViewModel
             //Câu lệnh linq kết hợp 3 bảng để lấy thông tin cần in ra
             var result = from ctsv in lstSinhVien.ChiTietSinhVien
-                         join sv in lstSinhVien.SinhVien on ctsv.MaSinhVien equals sv.MaSinhVien
+                         join sv in lstSinhVien.SinhVien on ctsv.IDSinhVien equals sv.IDSinhVien
                          join lsh in lstSinhVien.LopSinhHoat on ctsv.MaLSH equals lsh.MaLSH
                          select new SinhVienViewModel
                          {
+                             IDSinhVien = sv.IDSinhVien,
                              HoTen = sv.HoTen,
                              TenLSH = lsh.TenLSH,
                              SoDienThoai = ctsv.SoDienThoai,
@@ -65,8 +66,9 @@ namespace QLySinhVien.Controllers
         public ActionResult Create()
         {
             var context = new DBSinhVienContext();
-            var lopSHSelect = new SelectList(context.LopSinhHoat, "MaLSH", "TenLSH");
-            ViewBag.MaLSH = lopSHSelect;
+            List<LopSinhHoat> list = context.LopSinhHoat.ToList();
+            ViewBag.LopSHList = new SelectList(list, "MaLSH", "TenLSH");
+
             return View();
         }
 
@@ -80,6 +82,8 @@ namespace QLySinhVien.Controllers
                 //Insert dữ liệu vào nhiều bảng khác nhau 
                 // TODO: Add insert logic here
                 var context = new DBSinhVienContext();
+                List<LopSinhHoat> list = context.LopSinhHoat.ToList();
+                ViewBag.LopSHList = new SelectList(list, "MaLSH", "TenLSH");
 
                 //Khởi tạo lớp sinh viên để thêm trước
                 SinhVien sv = new SinhVien();
@@ -89,8 +93,11 @@ namespace QLySinhVien.Controllers
                 context.SinhVien.Add(sv);
                 context.SaveChanges();//Lưu lại
 
+                //Lấy id của sinh viên (đã tự động tạo) từ table sinh viên sau đó truyền vào cho table chitietsinhvien 
+                int id = sv.IDSinhVien;
+
                 ChiTietSinhVien ctsv = new ChiTietSinhVien();
-                ctsv.MaSinhVien = model.MaSinhVien;
+                ctsv.IDSinhVien = sv.IDSinhVien; //Thêm ID ở chỗ này nè
                 ctsv.GioiTinh = model.GioiTinh;
                 ctsv.Email = model.Email;
                 ctsv.SoDienThoai = model.SoDienThoai;
@@ -108,13 +115,14 @@ namespace QLySinhVien.Controllers
         }
 
         // GET: SinhVien/Edit/5
-        public ActionResult Edit(string id = "")
+        public ActionResult Edit(int id)
         {
             var context = new DBSinhVienContext();
-            var editing = context.ChiTietSinhVien.Find(id);
-            var LopHPSelected = new SelectList(context.LopSinhHoat, "MaLSH", "TenLSH", editing);
-            ViewBag.MaLHP = LopHPSelected;
-            return View(editing);
+            var sinhvien = context.ChiTietSinhVien.Find(id);
+            List<LopSinhHoat> list = context.LopSinhHoat.ToList();
+            ViewBag.LopSHList = new SelectList(list, "MaLSH", "TenLSH");
+
+            return View(sinhvien);
 
         }
 
@@ -126,11 +134,12 @@ namespace QLySinhVien.Controllers
             {
                 // TODO: Add update logic here
                 var context = new DBSinhVienContext();
-                var old = context.ChiTietSinhVien.Find(model.MaSinhVien);
-                old.MaSinhVien = model.MaSinhVien;
+                var old = context.ChiTietSinhVien.Find(model.IDSinhVien);
+
+                old.IDSinhVien = model.IDSinhVien;
                 old.MaLSH = model.MaLSH;
-                old.GioiTinh = model.GioiTinh;
-                old.SinhVien.HoTen = model.SinhVien.HoTen;
+                old.SoDienThoai = model.SoDienThoai;
+                //old.SinhVien.HoTen = model.SinhVien.HoTen;
                 old.Email = model.Email;
 
                 context.SaveChanges();
@@ -143,10 +152,12 @@ namespace QLySinhVien.Controllers
         }
 
         // GET: SinhVien/Delete/5
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int id)
         {
+            var context = new DBSinhVienContext();
+            var delete = context.ChiTietSinhVien.Find(id);
 
-            return View();
+            return View(delete);
         }
 
         // POST: SinhVien/Delete/5
@@ -156,6 +167,12 @@ namespace QLySinhVien.Controllers
             try
             {
                 // TODO: Add delete logic here
+                var context = new DBSinhVienContext();
+                var delete1 = context.SinhVien.Find(id);
+                var delete2 = context.ChiTietSinhVien.Find(id);
+                context.SinhVien.Remove(delete1);
+                context.ChiTietSinhVien.Remove(delete2);
+                context.SaveChanges();
 
                 return RedirectToAction("Index");
             }

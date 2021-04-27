@@ -9,6 +9,8 @@ namespace QLySinhVien.Models
 {
     public partial class SinhVienViewModel
     {
+        public int IDSinhVien { get; set; }
+
         [DisplayName("Mã sinh viên")]
         public string MaSinhVien { get; set; }
 
