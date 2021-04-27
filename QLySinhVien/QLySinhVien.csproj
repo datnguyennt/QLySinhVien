@@ -182,6 +182,7 @@
     <Content Include="Views\SinhVien\Index.cshtml" />
     <Content Include="Views\SinhVien\Create.cshtml" />
     <Content Include="Views\SinhVien\Edit.cshtml" />
+    <Content Include="Views\SinhVien\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
